@@ -20,8 +20,10 @@ composer require jordanbeattie/craftcms-block-styles
 ./craft plugin/install block-styles
 ```
 ## Use 
-Create a field in Craft settings and select the "Block Style" option. 
+Upon install, a `block-styles.php` file will be created in your project's `config` directory. 
 
-## Configuration
-Add a config file called `block-styles.php` to your `config` directory. 
-You can copy the template
+Simply update this file with the example format to provide the dropdown options for your field. 
+
+By providing an integer, the dropdown will display an option for each option between 1 and your given integer. (e.g. if you input 3, the dropdown will show "one", "two" and "three" as options). Or you can provide an array of options per block, each with a label and value parameter. 
+
+Create a field in Craft settings and select the "Block Style" option and add it to your Neo blocks. 

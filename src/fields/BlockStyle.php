@@ -11,6 +11,7 @@ use craft\fields\conditions\OptionsFieldConditionRule;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\StringHelper;
+use NumberFormatter;
 use yii\db\Schema;
 
 /**
@@ -61,37 +62,13 @@ class BlockStyle extends Field
     protected function inputHtml(mixed $value, ElementInterface $element = null): string
     {
 
-        /* Get config */
-        $config = Craft::$app->config->getConfigFromFile('block-styles');
-
-        /* Set default options */
-        $options = $config['default'] ?? [
-            [ 'label' => 'One', 'value' => 'one' ],
-            [ 'label' => 'Two', 'value' => 'two' ],
-        ];
-
-        /* Get block options */
-        if( $element instanceof NeoBlock )
-        {
-
-            /* Get field handle */
-            $fieldHandle = Craft::$app->getFields()->getFieldById( $element->getType()->fieldId )->handle ?? 'default';
-
-            /* Get block handle */
-            $blockHandle = $element->getType()->handle ?? 'default';
-
-            /* Get fieldHandle => blockHandle OR fieldHandle => default OR defaultOptions */
-            $options = $config[ $fieldHandle ][ $blockHandle ] ?? ( $config[ $fieldHandle ]['default'] ?? $options );
-
-        }
-
         /* Render field */
         return Cp::selectizeHtml([
             'id'               => $this->getInputId(),
             'describedBy'      => $this->describedBy,
             'name'             => $this->handle,
             'value'            => $value,
-            'options'          => $options,
+            'options'          => $this->getOptions( $element ),
             'selectizeOptions' => [
                 'allowEmptyOption' => false,
             ],
@@ -117,6 +94,62 @@ class BlockStyle extends Field
     public function modifyElementsQuery(ElementQueryInterface $query, mixed $value): void
     {
         parent::modifyElementsQuery($query, $value);
+    }
+
+    private function getOptions( $element  )
+    {
+        /* Get config */
+        $config = Craft::$app->config->getConfigFromFile('block-styles');
+
+        /* Set default options */
+        $options = $config['default'] ?? 2;
+
+        /* Get block options */
+        if( $element instanceof NeoBlock )
+        {
+
+            /* Get field handle */
+            $fieldHandle = Craft::$app->getFields()->getFieldById( $element->getType()->fieldId )->handle ?? 'default';
+
+            /* Get block handle */
+            $blockHandle = $element->getType()->handle ?? 'default';
+
+            /* Get fieldHandle => blockHandle OR fieldHandle => default OR defaultOptions */
+            $options = $config[ $fieldHandle ][ $blockHandle ] ?? ( $config[ $fieldHandle ]['default'] ?? $options );
+
+        }
+
+        return $this->formatOptions( $options );
+
+    }
+
+    private function formatOptions( $options )
+    {
+        if( is_array( $options ) )
+        { 
+            return $options; 
+        }
+        elseif( is_int( $options ) )
+        {
+
+            $newOptions = [];
+            $formatter  = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+
+            for( $i = 1; $i <= $options; $i++ )
+            {
+                $word  = strtolower( $formatter->format($i) );
+                $label = ucfirst( $word );
+                $value = lcfirst( str_replace( " ", "", ucwords( str_replace( "-", " ", $word ) ) ) );
+                array_push( $newOptions, [
+                    'label' => $label, 
+                    'value' => $value
+                ]);
+            }
+
+            return $newOptions;
+
+        }
+        return [];
     }
 
 }
