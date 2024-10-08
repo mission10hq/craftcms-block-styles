@@ -1,14 +1,14 @@
 <?php
 
-namespace jordanbeattie\blockstyles;
+namespace mission10\blockstyles;
 
 use Craft;
 use craft\base\Model;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 use craft\services\Fields;
-use jordanbeattie\blockstyles\fields\BlockStyle;
-use jordanbeattie\blockstyles\models\Settings;
+use mission10\blockstyles\fields\BlockStyle;
+use mission10\blockstyles\models\Settings;
 use yii\base\Event;
 
 /**
@@ -16,8 +16,8 @@ use yii\base\Event;
  *
  * @method static BlockStyles getInstance()
  * @method Settings getSettings()
- * @author jordanbeattie <jordan@jordanbeattie.com>
- * @copyright jordanbeattie
+ * @author mission10 <jordan@mission10.com>
+ * @copyright mission10
  * @license MIT
  */
 class BlockStyles extends Plugin

@@ -1,6 +1,6 @@
 <?php
 
-namespace jordanbeattie\blockstyles\fields;
+namespace mission10\blockstyles\fields;
 
 use benf\neo\elements\Block as NeoBlock;
 use Craft;

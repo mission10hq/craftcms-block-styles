@@ -14,7 +14,7 @@ Open your terminal and run the following commands:
 cd /path/to/my-project
 
 # tell Composer to load the plugin
-composer require jordanbeattie/craftcms-block-styles
+composer require mission10/craftcms-block-styles
 
 # tell Craft to install the plugin
 ./craft plugin/install block-styles

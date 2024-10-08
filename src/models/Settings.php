@@ -1,6 +1,6 @@
 <?php
 
-namespace jordanbeattie\blockstyles\models;
+namespace mission10\blockstyles\models;
 
 use Craft;
 use craft\base\Model;
