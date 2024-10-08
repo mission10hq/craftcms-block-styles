@@ -25,7 +25,7 @@ class BlockStyle extends Field
         return Craft::t('block-styles', 'Block Style');
     }
 
-    public static function valueType(): string
+    public static function phpType(): string
     {
         return 'mixed';
     }
@@ -54,12 +54,12 @@ class BlockStyle extends Field
         return Schema::TYPE_STRING;
     }
 
-    public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
+    public function normalizeValue(mixed $value, ?\craft\base\ElementInterface $element = null): mixed
     {
         return $value;
     }
 
-    protected function inputHtml(mixed $value, ElementInterface $element = null): string
+    protected function inputHtml(mixed $value, ElementInterface $element = null, bool $inline = false): string
     {
 
         /* Render field */

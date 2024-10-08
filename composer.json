@@ -33,6 +33,8 @@
             "yiisoft/yii2-composer": true,
             "craftcms/plugin-installer": true
         }
+    },
+    "require-dev": {
+        "craftcms/rector": "dev-main"
     }
 }
-
