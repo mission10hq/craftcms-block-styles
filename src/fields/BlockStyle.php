@@ -3,10 +3,12 @@
 namespace mission10\blockstyles\fields;
 
 use benf\neo\elements\Block as NeoBlock;
+use craft\fields\Matrix;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\Entry;
 use craft\fields\conditions\OptionsFieldConditionRule;
 use craft\helpers\Cp;
 use craft\helpers\Html;
@@ -104,12 +106,12 @@ class BlockStyle extends Field
         /* Set default options */
         $options = $config['default'] ?? 2;
 
-        /* Get block options */
-        if( $element instanceof NeoBlock )
-        {
+        $field = Craft::$app->getFields()->getFieldById( $element->fieldId );
 
+        if( $field instanceof craft\fields\Matrix )
+        {
             /* Get field handle */
-            $fieldHandle = Craft::$app->getFields()->getFieldById( $element->getType()->fieldId )->handle ?? 'default';
+            $fieldHandle = $field->handle ?? 'default';
 
             /* Get block handle */
             $blockHandle = $element->getType()->handle ?? 'default';
