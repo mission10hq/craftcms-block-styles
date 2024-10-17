@@ -4,7 +4,7 @@
     "type": "craft-plugin",
     "license": "mit",
     "require": {
-        "php": ">=8.0.2",
+        "php": ">=8.2",
         "craftcms/cms": "^5.0.0"
     },
     "autoload": {
@@ -27,7 +27,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "8.0.2"
+            "php": "8.2.0"
         },
         "allow-plugins": {
             "yiisoft/yii2-composer": true,

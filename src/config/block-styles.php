@@ -5,7 +5,7 @@ return [
     // Default Options
     'default' => 2,
 
-    // Neo Field Handle
+    // Matrix Field Handle
     'neo-field-handle' => [
 
         // Block Handle => Style Options

@@ -1,10 +1,10 @@
 # Block Styles
 
-Style dropdown for Neo blocks
+Style dropdown for Matrix blocks
 
 ## Requirements
 
-This plugin requires Craft CMS 4.5.0 or later, and PHP 8.0.2 or later.
+This plugin requires Craft CMS 5.0.0 or later, and PHP 8.0.2 or later.
 
 ## Installation
 Open your terminal and run the following commands:
@@ -26,4 +26,4 @@ Simply update this file with the example format to provide the dropdown options 
 
 By providing an integer, the dropdown will display an option for each option between 1 and your given integer. (e.g. if you input 3, the dropdown will show "one", "two" and "three" as options). Or you can provide an array of options per block, each with a label and value parameter. 
 
-Create a field in Craft settings and select the "Block Style" option and add it to your Neo blocks. 
+Create a field in Craft settings and select the "Block Style" option and add it to your Matrix blocks. 

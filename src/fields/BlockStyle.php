@@ -2,8 +2,6 @@
 
 namespace mission10\blockstyles\fields;
 
-use benf\neo\elements\Block as NeoBlock;
-use craft\fields\Matrix;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
