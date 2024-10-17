@@ -1,11 +1,11 @@
 {
     "name": "mission10/craftcms-block-styles",
-    "description": "Style dropdown for Neo blocks",
+    "description": "Style dropdown for Matrix blocks",
     "type": "craft-plugin",
     "license": "mit",
     "require": {
         "php": ">=8.0.2",
-        "craftcms/cms": "^4.5.0|^5.0.0"
+        "craftcms/cms": "^5.0.0"
     },
     "autoload": {
         "psr-4": {
