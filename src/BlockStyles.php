@@ -8,6 +8,7 @@ use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 use craft\services\Fields;
 use mission10\blockstyles\fields\BlockStyle;
+use mission10\blockstyles\fields\BlockTheme;
 use mission10\blockstyles\models\Settings;
 use yii\base\Event;
 
@@ -42,15 +43,16 @@ class BlockStyles extends Plugin
         Craft::$app->onInit(function() {
 
             $this->attachEventHandlers();
-            
+
             $this->setComponents([
                 'config' => [
-                    'class' => 'craft\services\Config', 
+                    'class' => 'craft\services\Config',
                     'defaultConfig' => include __DIR__ . '/config/block-styles.php'
                 ]
             ]);
 
             $this->createConfigFile();
+            $this->createThemesConfigFile();
             
         });
     }
@@ -74,6 +76,7 @@ class BlockStyles extends Plugin
         // (see https://craftcms.com/docs/4.x/extend/events.html to get started)
         Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function (RegisterComponentTypesEvent $event) {
             $event->types[] = BlockStyle::class;
+            $event->types[] = BlockTheme::class;
         });
     }
 
@@ -82,12 +85,32 @@ class BlockStyles extends Plugin
      */
     private function createConfigFile()
     {
-        
+
         /* Template */
         $source      = __DIR__ . "/config/block-styles.php";
 
         /* Project config file */
-        $destination = Craft::$app->getPath()->getConfigPath() . '/block-styles.php'; 
+        $destination = Craft::$app->getPath()->getConfigPath() . '/block-styles.php';
+
+        /* Copy template to config directory */
+        if( file_exists( $source ) && !file_exists( $destination ) )
+        {
+            copy( $source, $destination );
+        }
+
+    }
+
+    /*
+     * Create block-themes config file
+     */
+    private function createThemesConfigFile()
+    {
+
+        /* Template */
+        $source      = __DIR__ . "/config/block-themes.php";
+
+        /* Project config file */
+        $destination = Craft::$app->getPath()->getConfigPath() . '/block-themes.php';
 
         /* Copy template to config directory */
         if( file_exists( $source ) && !file_exists( $destination ) )

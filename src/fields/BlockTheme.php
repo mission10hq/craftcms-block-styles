@@ -11,18 +11,17 @@ use craft\fields\conditions\OptionsFieldConditionRule;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\StringHelper;
-use NumberFormatter;
 use yii\db\Schema;
 
 /**
- * Block Style field type
+ * Block Theme field type
  */
-class BlockStyle extends Field
+class BlockTheme extends Field
 {
 
     public static function displayName(): string
     {
-        return Craft::t('block-styles', 'Block Style');
+        return Craft::t('block-styles', 'Block Theme');
     }
 
     public static function phpType(): string
@@ -46,7 +45,7 @@ class BlockStyle extends Field
 
     public function getSettingsHtml(): ?string
     {
-        return Craft::$app->getView()->renderTemplate( 'block-styles/_settings' );
+        return Craft::$app->getView()->renderTemplate( 'block-styles/_settings-themes' );
     }
 
     public function getContentColumnType(): array|string
@@ -65,8 +64,8 @@ class BlockStyle extends Field
         /* Get options for this block */
         $options = $this->getOptions( $element );
 
-        /* If less than 2 options, don't show the field */
-        if( count( $options ) < 2 )
+        /* If no options (themes disabled for this block), don't show the field */
+        if( empty( $options ) )
         {
             return '';
         }
@@ -108,57 +107,35 @@ class BlockStyle extends Field
     private function getOptions( $element  )
     {
         /* Get config */
-        $config = Craft::$app->config->getConfigFromFile('block-styles');
+        $config = Craft::$app->config->getConfigFromFile('block-themes');
 
-        /* Set default options */
-        $options = $config['default'] ?? 2;
+        /* Get default themes - empty array if not defined */
+        $defaultThemes = $config['default'] ?? [];
+
+        /* Default: themes are disabled (return empty array) */
+        $enabled = false;
 
         $field = Craft::$app->getFields()->getFieldById( $element->fieldId );
 
         if( $field instanceof craft\fields\Matrix )
         {
             /* Get field handle */
-            $fieldHandle = $field->handle ?? 'default';
+            $fieldHandle = $field->handle ?? null;
 
             /* Get block handle */
-            $blockHandle = $element->getType()->handle ?? 'default';
+            $blockHandle = $element->getType()->handle ?? null;
 
-            /* Get fieldHandle => blockHandle OR fieldHandle => default OR defaultOptions */
-            $options = $config[ $fieldHandle ][ $blockHandle ] ?? ( $config[ $fieldHandle ]['default'] ?? $options );
-
-        }
-
-        return $this->formatOptions( $options );
-
-    }
-
-    private function formatOptions( $options )
-    {
-        if( is_array( $options ) )
-        { 
-            return $options; 
-        }
-        elseif( is_int( $options ) )
-        {
-
-            $newOptions = [];
-            $formatter  = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-
-            for( $i = 1; $i <= $options; $i++ )
+            /* Check if themes are explicitly enabled for this field/block combination */
+            if( $fieldHandle && $blockHandle && isset($config[ $fieldHandle ][ $blockHandle ]) )
             {
-                $word  = strtolower( $formatter->format($i) );
-                $label = ucfirst( $word );
-                $value = lcfirst( str_replace( " ", "", ucwords( str_replace( "-", " ", $word ) ) ) );
-                array_push( $newOptions, [
-                    'label' => $label, 
-                    'value' => $value
-                ]);
+                $enabled = $config[ $fieldHandle ][ $blockHandle ] === true;
             }
 
-            return $newOptions;
-
         }
-        return [];
+
+        /* Return default themes only if enabled, otherwise return empty array */
+        return $enabled ? $defaultThemes : [];
+
     }
 
 }
