@@ -45,7 +45,7 @@ class BlockTheme extends Field
 
     public function getSettingsHtml(): ?string
     {
-        return Craft::$app->getView()->renderTemplate( 'block-styles/_settings' );
+        return Craft::$app->getView()->renderTemplate( 'block-styles/_settings-themes' );
     }
 
     public function getContentColumnType(): array|string
@@ -61,13 +61,22 @@ class BlockTheme extends Field
     protected function inputHtml(mixed $value, ElementInterface $element = null, bool $inline = false): string
     {
 
+        /* Get options for this block */
+        $options = $this->getOptions( $element );
+
+        /* If no options (themes disabled for this block), don't show the field */
+        if( empty( $options ) )
+        {
+            return '';
+        }
+
         /* Render field */
         return Cp::selectizeHtml([
             'id'               => $this->getInputId(),
             'describedBy'      => $this->describedBy,
             'name'             => $this->handle,
             'value'            => $value,
-            'options'          => $this->getOptions( $element ),
+            'options'          => $options,
             'selectizeOptions' => [
                 'allowEmptyOption' => false,
             ],
