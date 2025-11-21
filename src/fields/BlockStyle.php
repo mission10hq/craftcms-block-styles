@@ -62,13 +62,22 @@ class BlockStyle extends Field
     protected function inputHtml(mixed $value, ElementInterface $element = null, bool $inline = false): string
     {
 
+        /* Get options for this block */
+        $options = $this->getOptions( $element );
+
+        /* If less than 2 options, don't show the field */
+        if( count( $options ) < 2 )
+        {
+            return '';
+        }
+
         /* Render field */
         return Cp::selectizeHtml([
             'id'               => $this->getInputId(),
             'describedBy'      => $this->describedBy,
             'name'             => $this->handle,
             'value'            => $value,
-            'options'          => $this->getOptions( $element ),
+            'options'          => $options,
             'selectizeOptions' => [
                 'allowEmptyOption' => false,
             ],
