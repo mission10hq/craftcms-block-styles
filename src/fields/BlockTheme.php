@@ -18,6 +18,15 @@ use yii\db\Schema;
  */
 class BlockTheme extends Field
 {
+    /**
+     * Config cache to avoid repeated file reads
+     */
+    private static ?array $configCache = null;
+
+    /**
+     * Whether empty values are allowed
+     */
+    public bool $allowEmpty = false;
 
     public static function displayName(): string
     {
@@ -60,13 +69,16 @@ class BlockTheme extends Field
 
     protected function inputHtml(mixed $value, ElementInterface $element = null, bool $inline = false): string
     {
+        /* Validate element exists */
+        if ($element === null) {
+            return '';
+        }
 
         /* Get options for this block */
-        $options = $this->getOptions( $element );
+        $options = $this->getOptions($element);
 
         /* If no options (themes disabled for this block), don't show the field */
-        if( empty( $options ) )
-        {
+        if (empty($options)) {
             return '';
         }
 
@@ -78,10 +90,9 @@ class BlockTheme extends Field
             'value'            => $value,
             'options'          => $options,
             'selectizeOptions' => [
-                'allowEmptyOption' => false,
+                'allowEmptyOption' => $this->allowEmpty,
             ],
         ]);
-
     }
 
     public function getElementValidationRules(): array
@@ -104,10 +115,24 @@ class BlockTheme extends Field
         parent::modifyElementsQuery($query, $value);
     }
 
-    private function getOptions( $element  )
+    /**
+     * Get options for the given element
+     *
+     * @param ElementInterface|null $element The element being edited
+     * @return array The options array if enabled, empty array otherwise
+     */
+    private function getOptions(?ElementInterface $element): array
     {
-        /* Get config */
-        $config = Craft::$app->config->getConfigFromFile('block-themes');
+        /* Validate element and required properties */
+        if ($element === null || !isset($element->fieldId)) {
+            return [];
+        }
+
+        /* Get config with caching */
+        if (self::$configCache === null) {
+            self::$configCache = Craft::$app->config->getConfigFromFile('block-themes');
+        }
+        $config = self::$configCache;
 
         /* Get default themes - empty array if not defined */
         $defaultThemes = $config['default'] ?? [];
@@ -115,27 +140,31 @@ class BlockTheme extends Field
         /* Default: themes are disabled (return empty array) */
         $enabled = false;
 
-        $field = Craft::$app->getFields()->getFieldById( $element->fieldId );
+        /* Get field and validate */
+        $field = Craft::$app->getFields()->getFieldById($element->fieldId);
+        if ($field === null) {
+            return [];
+        }
 
-        if( $field instanceof craft\fields\Matrix )
-        {
+        if ($field instanceof craft\fields\Matrix) {
             /* Get field handle */
             $fieldHandle = $field->handle ?? null;
 
-            /* Get block handle */
-            $blockHandle = $element->getType()->handle ?? null;
+            /* Get block type and handle */
+            $blockType = $element->getType();
+            if ($blockType === null) {
+                return [];
+            }
+            $blockHandle = $blockType->handle ?? null;
 
             /* Check if themes are explicitly enabled for this field/block combination */
-            if( $fieldHandle && $blockHandle && isset($config[ $fieldHandle ][ $blockHandle ]) )
-            {
-                $enabled = $config[ $fieldHandle ][ $blockHandle ] === true;
+            if ($fieldHandle && $blockHandle && isset($config[$fieldHandle][$blockHandle])) {
+                $enabled = $config[$fieldHandle][$blockHandle] === true;
             }
-
         }
 
         /* Return default themes only if enabled, otherwise return empty array */
         return $enabled ? $defaultThemes : [];
-
     }
 
 }

@@ -19,6 +19,15 @@ use yii\db\Schema;
  */
 class BlockStyle extends Field
 {
+    /**
+     * Config cache to avoid repeated file reads
+     */
+    private static ?array $configCache = null;
+
+    /**
+     * Whether empty values are allowed
+     */
+    public bool $allowEmpty = false;
 
     public static function displayName(): string
     {
@@ -61,13 +70,16 @@ class BlockStyle extends Field
 
     protected function inputHtml(mixed $value, ElementInterface $element = null, bool $inline = false): string
     {
+        /* Validate element exists */
+        if ($element === null) {
+            return '';
+        }
 
         /* Get options for this block */
-        $options = $this->getOptions( $element );
+        $options = $this->getOptions($element);
 
         /* If less than 2 options, don't show the field */
-        if( count( $options ) < 2 )
-        {
+        if (count($options) < 2) {
             return '';
         }
 
@@ -79,10 +91,9 @@ class BlockStyle extends Field
             'value'            => $value,
             'options'          => $options,
             'selectizeOptions' => [
-                'allowEmptyOption' => false,
+                'allowEmptyOption' => $this->allowEmpty,
             ],
         ]);
-
     }
 
     public function getElementValidationRules(): array
@@ -105,58 +116,77 @@ class BlockStyle extends Field
         parent::modifyElementsQuery($query, $value);
     }
 
-    private function getOptions( $element  )
+    /**
+     * Get options for the given element
+     *
+     * @param ElementInterface|null $element The element being edited
+     * @return array The formatted options array
+     */
+    private function getOptions(?ElementInterface $element): array
     {
-        /* Get config */
-        $config = Craft::$app->config->getConfigFromFile('block-styles');
+        /* Validate element and required properties */
+        if ($element === null || !isset($element->fieldId)) {
+            return [];
+        }
+
+        /* Get config with caching */
+        if (self::$configCache === null) {
+            self::$configCache = Craft::$app->config->getConfigFromFile('block-styles');
+        }
+        $config = self::$configCache;
 
         /* Set default options */
         $options = $config['default'] ?? 2;
 
-        $field = Craft::$app->getFields()->getFieldById( $element->fieldId );
+        /* Get field and validate */
+        $field = Craft::$app->getFields()->getFieldById($element->fieldId);
+        if ($field === null) {
+            return $this->formatOptions($options);
+        }
 
-        if( $field instanceof craft\fields\Matrix )
-        {
+        if ($field instanceof craft\fields\Matrix) {
             /* Get field handle */
             $fieldHandle = $field->handle ?? 'default';
 
-            /* Get block handle */
-            $blockHandle = $element->getType()->handle ?? 'default';
+            /* Get block type and handle */
+            $blockType = $element->getType();
+            if ($blockType === null) {
+                return $this->formatOptions($options);
+            }
+            $blockHandle = $blockType->handle ?? 'default';
 
             /* Get fieldHandle => blockHandle OR fieldHandle => default OR defaultOptions */
-            $options = $config[ $fieldHandle ][ $blockHandle ] ?? ( $config[ $fieldHandle ]['default'] ?? $options );
-
+            $options = $config[$fieldHandle][$blockHandle] ?? ($config[$fieldHandle]['default'] ?? $options);
         }
 
-        return $this->formatOptions( $options );
-
+        return $this->formatOptions($options);
     }
 
-    private function formatOptions( $options )
+    /**
+     * Format options from config into standardized array format
+     *
+     * @param mixed $options Options from config (array or int)
+     * @return array Formatted options with label and value
+     */
+    private function formatOptions(mixed $options): array
     {
-        if( is_array( $options ) )
-        { 
-            return $options; 
-        }
-        elseif( is_int( $options ) )
-        {
-
+        if (is_array($options)) {
+            return $options;
+        } elseif (is_int($options)) {
             $newOptions = [];
-            $formatter  = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+            $formatter = new NumberFormatter("en", NumberFormatter::SPELLOUT);
 
-            for( $i = 1; $i <= $options; $i++ )
-            {
-                $word  = strtolower( $formatter->format($i) );
-                $label = ucfirst( $word );
-                $value = lcfirst( str_replace( " ", "", ucwords( str_replace( "-", " ", $word ) ) ) );
-                array_push( $newOptions, [
-                    'label' => $label, 
+            for ($i = 1; $i <= $options; $i++) {
+                $word = strtolower($formatter->format($i));
+                $label = ucfirst($word);
+                $value = lcfirst(str_replace(" ", "", ucwords(str_replace("-", " ", $word))));
+                $newOptions[] = [
+                    'label' => $label,
                     'value' => $value
-                ]);
+                ];
             }
 
             return $newOptions;
-
         }
         return [];
     }
