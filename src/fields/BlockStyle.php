@@ -22,7 +22,7 @@ class BlockStyle extends Field
 
     public static function displayName(): string
     {
-        return Craft::t('block-styles', 'Block Style');
+        return 'Block Style';
     }
 
     public static function phpType(): string

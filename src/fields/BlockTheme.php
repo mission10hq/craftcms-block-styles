@@ -21,7 +21,7 @@ class BlockTheme extends Field
 
     public static function displayName(): string
     {
-        return Craft::t('block-styles', 'Block Theme');
+        return 'Block Theme';
     }
 
     public static function phpType(): string
