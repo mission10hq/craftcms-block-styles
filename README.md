@@ -1,6 +1,6 @@
 # Block Styles
 
-Style and Theme dropdowns for Matrix blocks
+Style, Theme, Pattern, and Background dropdowns for Matrix blocks
 
 ## Requirements
 
@@ -21,7 +21,7 @@ composer require mission10/craftcms-block-styles
 ```
 ## Use
 
-This plugin provides two field types for Matrix blocks:
+This plugin provides four field types for Matrix blocks:
 
 ### Block Style Field
 
@@ -85,11 +85,80 @@ return [
 - The field is hidden if themes are not enabled for a block
 - **Themes are disabled by default** - only show when explicitly set to `true`
 
+### Block Pattern Field
+
+Upon install, a `block-patterns.php` file will be created in your project's `config` directory.
+
+Block Patterns work the same way as Block Themes - patterns are defined once globally, and you simply enable/disable them per block.
+
+Create a field in Craft settings and select the "Block Pattern" option and add it to your Matrix blocks.
+
+**Config structure:**
+```php
+return [
+    // Define patterns once globally
+    'default' => [
+        ['label' => 'None', 'value' => 'none'],
+        ['label' => 'Dots', 'value' => 'dots'],
+        ['label' => 'Lines', 'value' => 'lines'],
+        ['label' => 'Grid', 'value' => 'grid'],
+    ],
+
+    // Enable patterns per block with true/false
+    'matrix-field-handle' => [
+        'block-with-patterns' => true,  // Shows all default patterns
+        // Other blocks are disabled by default
+    ]
+];
+```
+
+**Behavior:**
+- Patterns are defined once in the `default` array
+- Per block, you only enable (true) or disable (omit/false)
+- When enabled, ALL default patterns are available
+- The field is hidden if patterns are not enabled for a block
+- **Patterns are disabled by default** - only show when explicitly set to `true`
+
+### Block Background Field
+
+Upon install, a `block-backgrounds.php` file will be created in your project's `config` directory.
+
+Block Backgrounds work the same way as Block Themes - backgrounds are defined once globally, and you simply enable/disable them per block.
+
+Create a field in Craft settings and select the "Block Background" option and add it to your Matrix blocks.
+
+**Config structure:**
+```php
+return [
+    // Define backgrounds once globally
+    'default' => [
+        ['label' => 'None', 'value' => 'none'],
+        ['label' => 'White', 'value' => 'white'],
+        ['label' => 'Gray', 'value' => 'gray'],
+        ['label' => 'Primary', 'value' => 'primary'],
+        ['label' => 'Secondary', 'value' => 'secondary'],
+    ],
+
+    // Enable backgrounds per block with true/false
+    'matrix-field-handle' => [
+        'block-with-backgrounds' => true,  // Shows all default backgrounds
+        // Other blocks are disabled by default
+    ]
+];
+```
+
+**Behavior:**
+- Backgrounds are defined once in the `default` array
+- Per block, you only enable (true) or disable (omit/false)
+- When enabled, ALL default backgrounds are available
+- The field is hidden if backgrounds are not enabled for a block
+- **Backgrounds are disabled by default** - only show when explicitly set to `true`
+
 ### Key Differences
 
-| Feature | Block Style | Block Theme |
+| Feature | Block Style | Block Theme / Pattern / Background |
 |---------|-------------|-------------|
 | **Options per block** | Can be different for each block | Same options everywhere (from default) |
 | **Configuration** | Define options per block | Define once, enable/disable per block |
 | **Default behavior** | Shows 2 options (from default) | Hidden (disabled by default) |
-| **Use case** | Blocks need different layout options | Consistent theming across blocks | 
+| **Use case** | Blocks need different layout options | Consistent theming/styling across blocks | 

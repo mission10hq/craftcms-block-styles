@@ -7,6 +7,8 @@ use craft\base\Model;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 use craft\services\Fields;
+use mission10\blockstyles\fields\BlockBackground;
+use mission10\blockstyles\fields\BlockPattern;
 use mission10\blockstyles\fields\BlockStyle;
 use mission10\blockstyles\fields\BlockTheme;
 use mission10\blockstyles\models\Settings;
@@ -53,6 +55,8 @@ class BlockStyles extends Plugin
 
             $this->createConfigFile();
             $this->createThemesConfigFile();
+            $this->createPatternsConfigFile();
+            $this->createBackgroundsConfigFile();
             
         });
     }
@@ -77,6 +81,8 @@ class BlockStyles extends Plugin
         Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function (RegisterComponentTypesEvent $event) {
             $event->types[] = BlockStyle::class;
             $event->types[] = BlockTheme::class;
+            $event->types[] = BlockPattern::class;
+            $event->types[] = BlockBackground::class;
         });
     }
 
@@ -111,6 +117,46 @@ class BlockStyles extends Plugin
 
         /* Project config file */
         $destination = Craft::$app->getPath()->getConfigPath() . '/block-themes.php';
+
+        /* Copy template to config directory */
+        if( file_exists( $source ) && !file_exists( $destination ) )
+        {
+            copy( $source, $destination );
+        }
+
+    }
+
+    /*
+     * Create block-patterns config file
+     */
+    private function createPatternsConfigFile()
+    {
+
+        /* Template */
+        $source      = __DIR__ . "/config/block-patterns.php";
+
+        /* Project config file */
+        $destination = Craft::$app->getPath()->getConfigPath() . '/block-patterns.php';
+
+        /* Copy template to config directory */
+        if( file_exists( $source ) && !file_exists( $destination ) )
+        {
+            copy( $source, $destination );
+        }
+
+    }
+
+    /*
+     * Create block-backgrounds config file
+     */
+    private function createBackgroundsConfigFile()
+    {
+
+        /* Template */
+        $source      = __DIR__ . "/config/block-backgrounds.php";
+
+        /* Project config file */
+        $destination = Craft::$app->getPath()->getConfigPath() . '/block-backgrounds.php';
 
         /* Copy template to config directory */
         if( file_exists( $source ) && !file_exists( $destination ) )
