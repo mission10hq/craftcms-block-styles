@@ -9,7 +9,7 @@ return [
     ],
 
     // Matrix Field Handle
-    'neo-field-handle' => [
+    'contentBlocks' => [
 
         // Block Handle => true/false (enable/disable themes)
         // Only list blocks where themes should be ENABLED

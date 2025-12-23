@@ -5,13 +5,11 @@ return [
     // Default pattern options (defined once globally)
     'default' => [
         [ 'label' => 'None',   'value' => 'none'   ],
-        [ 'label' => 'Dots',   'value' => 'dots'   ],
-        [ 'label' => 'Lines',  'value' => 'lines'  ],
-        [ 'label' => 'Grid',   'value' => 'grid'   ],
+        [ 'label' => 'Wave',   'value' => 'wave'   ],
     ],
 
     // Matrix Field Handle
-    'neo-field-handle' => [
+    'contentBlocks' => [
 
         // Block Handle => true/false (enable/disable patterns)
         // Only list blocks where patterns should be ENABLED

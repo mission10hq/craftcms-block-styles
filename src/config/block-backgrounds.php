@@ -5,14 +5,12 @@ return [
     // Default background options (defined once globally)
     'default' => [
         [ 'label' => 'None',        'value' => 'none'        ],
-        [ 'label' => 'White',       'value' => 'white'       ],
-        [ 'label' => 'Gray',        'value' => 'gray'        ],
-        [ 'label' => 'Primary',     'value' => 'primary'     ],
-        [ 'label' => 'Secondary',   'value' => 'secondary'   ],
+        [ 'label' => 'Gradient',       'value' => 'gradient' ],
+        [ 'label' => 'Custom',       'value' => 'custom' ],
     ],
 
     // Matrix Field Handle
-    'neo-field-handle' => [
+    'contentBlocks' => [
 
         // Block Handle => true/false (enable/disable backgrounds)
         // Only list blocks where backgrounds should be ENABLED
