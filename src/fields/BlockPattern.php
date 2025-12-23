@@ -6,10 +6,8 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\db\ElementQueryInterface;
-use craft\elements\Entry;
 use craft\fields\conditions\OptionsFieldConditionRule;
 use craft\helpers\Cp;
-use craft\helpers\Html;
 use craft\helpers\StringHelper;
 use yii\db\Schema;
 
