@@ -4,9 +4,9 @@ return [
 
     // Default background options (defined once globally)
     'default' => [
-        [ 'label' => 'None',        'value' => 'none'        ],
-        [ 'label' => 'Gradient',       'value' => 'gradient' ],
-        [ 'label' => 'Custom',       'value' => 'custom' ],
+        [ 'label' => 'None', 'value' => 'none' ],
+        [ 'label' => 'Gradient', 'value' => 'gradient' ],
+        [ 'label' => 'Custom', 'value' => 'custom' ],
     ],
 
     // Matrix Field Handle
