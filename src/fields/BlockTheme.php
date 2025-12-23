@@ -117,7 +117,7 @@ class BlockTheme extends Field
 
         $field = Craft::$app->getFields()->getFieldById( $element->fieldId );
 
-        if( $field instanceof craft\fields\Matrix )
+        if( $field instanceof \craft\fields\Matrix )
         {
             /* Get field handle */
             $fieldHandle = $field->handle ?? null;

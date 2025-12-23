@@ -6,23 +6,20 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\db\ElementQueryInterface;
-use craft\elements\Entry;
 use craft\fields\conditions\OptionsFieldConditionRule;
 use craft\helpers\Cp;
-use craft\helpers\Html;
 use craft\helpers\StringHelper;
-use NumberFormatter;
 use yii\db\Schema;
 
 /**
- * Block Style field type
+ * Block Pattern field type
  */
-class BlockStyle extends Field
+class BlockPattern extends Field
 {
 
     public static function displayName(): string
     {
-        return 'Block Style';
+        return 'Block Pattern';
     }
 
     public static function phpType(): string
@@ -46,7 +43,7 @@ class BlockStyle extends Field
 
     public function getSettingsHtml(): ?string
     {
-        return Craft::$app->getView()->renderTemplate( 'block-styles/_settings' );
+        return Craft::$app->getView()->renderTemplate( 'block-styles/_settings-patterns' );
     }
 
     public function getContentColumnType(): array|string
@@ -65,8 +62,8 @@ class BlockStyle extends Field
         /* Get options for this block */
         $options = $this->getOptions( $element );
 
-        /* If less than 2 options, don't show the field */
-        if( count( $options ) < 2 )
+        /* If no options (patterns disabled for this block), don't show the field */
+        if( empty( $options ) )
         {
             return '';
         }
@@ -108,57 +105,35 @@ class BlockStyle extends Field
     private function getOptions( $element  )
     {
         /* Get config */
-        $config = Craft::$app->config->getConfigFromFile('block-styles');
+        $config = Craft::$app->config->getConfigFromFile('block-patterns');
 
-        /* Set default options */
-        $options = $config['default'] ?? 2;
+        /* Get default patterns - empty array if not defined */
+        $defaultPatterns = $config['default'] ?? [];
+
+        /* Default: patterns are disabled (return empty array) */
+        $enabled = false;
 
         $field = Craft::$app->getFields()->getFieldById( $element->fieldId );
 
         if( $field instanceof \craft\fields\Matrix )
         {
             /* Get field handle */
-            $fieldHandle = $field->handle ?? 'default';
+            $fieldHandle = $field->handle ?? null;
 
             /* Get block handle */
-            $blockHandle = $element->getType()->handle ?? 'default';
+            $blockHandle = $element->getType()->handle ?? null;
 
-            /* Get fieldHandle => blockHandle OR fieldHandle => default OR defaultOptions */
-            $options = $config[ $fieldHandle ][ $blockHandle ] ?? ( $config[ $fieldHandle ]['default'] ?? $options );
-
-        }
-
-        return $this->formatOptions( $options );
-
-    }
-
-    private function formatOptions( $options )
-    {
-        if( is_array( $options ) )
-        { 
-            return $options; 
-        }
-        elseif( is_int( $options ) )
-        {
-
-            $newOptions = [];
-            $formatter  = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-
-            for( $i = 1; $i <= $options; $i++ )
+            /* Check if patterns are explicitly enabled for this field/block combination */
+            if( $fieldHandle && $blockHandle && isset($config[ $fieldHandle ][ $blockHandle ]) )
             {
-                $word  = strtolower( $formatter->format($i) );
-                $label = ucfirst( $word );
-                $value = lcfirst( str_replace( " ", "", ucwords( str_replace( "-", " ", $word ) ) ) );
-                array_push( $newOptions, [
-                    'label' => $label, 
-                    'value' => $value
-                ]);
+                $enabled = $config[ $fieldHandle ][ $blockHandle ] === true;
             }
 
-            return $newOptions;
-
         }
-        return [];
+
+        /* Return default patterns only if enabled, otherwise return empty array */
+        return $enabled ? $defaultPatterns : [];
+
     }
 
 }

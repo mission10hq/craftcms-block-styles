@@ -6,7 +6,7 @@ return [
     'default' => 2,
 
     // Matrix Field Handle
-    'neo-field-handle' => [
+    'contentBlocks' => [
 
         // Block Handle => Style Options
         'my-block-type-handle' => 3,
