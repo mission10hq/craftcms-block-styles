@@ -7,7 +7,6 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\Entry;
-use craft\fields\conditions\OptionsFieldConditionRule;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\StringHelper;
@@ -96,7 +95,7 @@ class BlockTheme extends Field
 
     public function getElementConditionRuleType(): array|string|null
     {
-        return OptionsFieldConditionRule::class;
+        return null;
     }
 
     public function modifyElementsQuery(ElementQueryInterface $query, mixed $value): void

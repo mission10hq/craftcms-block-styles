@@ -6,7 +6,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\db\ElementQueryInterface;
-use craft\fields\conditions\OptionsFieldConditionRule;
 use craft\helpers\Cp;
 use craft\helpers\StringHelper;
 use yii\db\Schema;
@@ -94,7 +93,7 @@ class BlockBackground extends Field
 
     public function getElementConditionRuleType(): array|string|null
     {
-        return OptionsFieldConditionRule::class;
+        return null;
     }
 
     public function modifyElementsQuery(ElementQueryInterface $query, mixed $value): void
