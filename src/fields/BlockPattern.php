@@ -3,6 +3,7 @@
 namespace mission10\blockstyles\fields;
 
 use Craft;
+use mission10\blockstyles\conditions\BlockStyleConditionRule;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\db\ElementQueryInterface;
@@ -93,12 +94,17 @@ class BlockPattern extends Field
 
     public function getElementConditionRuleType(): array|string|null
     {
-        return null;
+        return BlockStyleConditionRule::class;
     }
 
     public function modifyElementsQuery(ElementQueryInterface $query, mixed $value): void
     {
         parent::modifyElementsQuery($query, $value);
+    }
+
+    public function getConditionOptions(): array
+    {
+        return Craft::$app->config->getConfigFromFile('block-patterns')['default'] ?? [];
     }
 
     private function getOptions( $element  )
