@@ -123,7 +123,8 @@ class BlockTheme extends Field
         $fieldId = $element->fieldId ?? null;
         $field = $fieldId ? Craft::$app->getFields()->getFieldById($fieldId) : null;
 
-        if( $field instanceof \craft\fields\Matrix )
+        // A Matrix entry or a Neo block: both carry fieldId and a type with a handle. instanceof on an absent class is false, so Neo stays optional.
+        if( $field instanceof \craft\fields\Matrix || $field instanceof \benf\neo\Field )
         {
             /* Get field handle */
             $fieldHandle = $field->handle ?? null;

@@ -1,6 +1,6 @@
 # Block Styles
 
-Style, Theme, Pattern, and Background dropdowns for Matrix blocks
+Style, Theme, Pattern, and Background dropdowns for Matrix blocks and Neo blocks
 
 ## Requirements
 
@@ -21,7 +21,7 @@ composer require mission10/craftcms-block-styles
 ```
 ## Use
 
-This plugin provides four field types for Matrix blocks:
+This plugin provides four field types for Matrix blocks. They work the same way inside Neo blocks: key the config by the Neo field's handle and the block type's handle.
 
 ### Block Style Field
 
